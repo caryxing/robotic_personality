@@ -12,7 +12,7 @@ import time
 PERSONALITY_FILE_PATH = "./emotion_mappings/easier_pleased.json"
 
 os.system("sudo killall -9 pocketsphinx_continuous 2> /dev/null")
-proc = subprocess.Popen(["sudo pocketsphinx_continuous -adcdev plughw:1,0 2> /dev/null"], stdout=subprocess.PIPE, shell=True, bufsize=1)
+proc = subprocess.Popen(["sudo pocketsphinx_continuous -adcdev plughw:1,0 -dict ./bot.dic  2> /dev/null"], stdout=subprocess.PIPE, shell=True, bufsize=1)
 
 
 def load_personality():
@@ -79,7 +79,7 @@ try:
 	while True:
 		for line in iter(proc.stdout.readline, b''):
 			row = line[:-1]
-			match = re.match(r"(\d+)\: (.+)", row)
+			match = re.match(r"(\d+)\:(.*)", row)
 			if match and time.time() - last_action_time > 10.0:
 				seq =  match.groups()[0]
 				text = match.groups()[1]
