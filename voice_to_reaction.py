@@ -19,31 +19,47 @@ def load_personality():
 	with open(PERSONALITY_FILE_PATH, 'r') as inputFile:
 		personality = json.load(inputFile)
 		print("Personality is loaded. Description: [%s]" % (personality["desc"]))
-		#return {"keywords": personality["keywords"], "degree": personality["degree"]}
 		return personality
-
 personality = load_personality()
+
 
 import api
 
+def default_action():
+	pan = api.GetMotorValue(19)
+	api.SetMotorValue(19, min(700, pan+50))
+	time.sleep(0.5)
+	api.SetMotorValue(19, max(300, pan-50))
+	time.sleep(0.5)
+	api.SetMotorValue(19, min(700, pan+50))
+	time.sleep(0.5)
+	api.SetMotorValue(19, pan)
+
+	
 def take_action(text, personality):
 	emotion = None
 	degree = None
-        api_map = {'happy1': 4, 'happy2': 5, 'anger2': 6, 'anger3': 7, 'fear3': 11,
-                   'fear2': 12, 'surprise2': 13, 'surprise3': 14, 'sad2': 17, 'sad3': 18, 'default': 4}
+	api_map = {'happy3': 4, 'happy2': 5, 'anger2': 6, 'anger3': 7, 'fear3': 11,
+			   'fear2': 12, 'surprise2': 13, 'surprise3': 14, 'sad2': 17, 'sad3': 18}
+	
 	for word in text.split(' '):
 		if emotion is None:
 			emotion = personality["keywords"].get(word, None)
 		if degree is None:
 			degree = personality["degree"].get(word, None)
+			
 	if emotion is None:
 		emotion = personality["keywords"]["_default"]
 	if degree is None:
 		degree = personality["degree"]["_default"]
 
 	print("Got emotion [%s] with degree [%d]." % (emotion, degree))
-        api.PlayAction(api_map[emotion + str(degree)])
-
+	rme_page = api_map.get(emotion + str(degree), None)
+	if rme_page:
+		api.PlayAction(rme_page)
+	else:
+		print("Could not understand, playing default reaction.")
+		default_action()
 
 
 def init_rme_api():
@@ -54,11 +70,11 @@ def init_rme_api():
 		print("Initialization failed")
 		sys.exit(1)
 
+		
 init_rme_api()
+default_action()
 
 last_action_time = time.time()
-
-
 try:
 	while True:
 		for line in iter(proc.stdout.readline, b''):
@@ -69,7 +85,7 @@ try:
 				text = match.groups()[1]
 				print "\nGet text:", text
 				take_action(text, personality)
-                                last_action_time = time.time()
+				last_action_time = time.time()
 			else:
 				print row
 			
