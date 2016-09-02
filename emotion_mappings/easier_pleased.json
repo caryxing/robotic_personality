@@ -1,0 +1,21 @@
+{
+    "desc": "This robot is easier to be pleased",
+
+    "keywords": {
+        "beautiful": "happy",
+        "stupid": "sad",
+        "dull": "sad",
+        "smart": "surprise",
+
+        "_default": "happy"
+    },
+
+    "degree": {
+        "very": 2,
+        "super": 3,
+        "fantasticly": 3,
+        "extremely": 3,
+
+        "_default": 1
+    }
+}
