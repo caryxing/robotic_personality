@@ -2,25 +2,25 @@
     "desc": "This robot is easier to be pleased",
 
     "keywords" : {
-        "beautiful" : "happy",
+        "beautiful" : "surprise",
         "stupid"    : "sad",
         "smart"     : "happy",
         "scary"     : "fear",
         "mad"       : "anger",
         "fantastic" : "surprise",
-        "liar"       : "sad",
+        "liar"       : "anger",
 
         "_default": "NA"
     },
 
     "degree": {
         "beautiful" : 3,
-        "stupid"    : 2,
+        "stupid"    : 3,
         "smart"     : 3,
-        "scary"     : 2,
-        "mad"       : 2,
+        "scary"     : 3,
+        "mad"       : 3,
         "fantastic" : 3,
-        "liar"       : 2,
+        "liar"       : 3,
 
 
         "_default": 2

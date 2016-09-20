@@ -6,20 +6,20 @@
         "stupid"    : "sad",
         "smart"     : "happy",
         "scary"     : "fear",
-        "mad"       : "anger",
-        "fantastic" : "surprise",
+        "mad"       : "sad",
+        "fantastic" : "happy",
         "liar"       : "sad",
 
         "_default": "NA"
     },
 
     "degree": {
-        "beautiful" : 3,
+        "beautiful" : 2,
         "stupid"    : 2,
-        "smart"     : 3,
+        "smart"     : 2,
         "scary"     : 2,
         "mad"       : 2,
-        "fantastic" : 3,
+        "fantastic" : 2,
         "liar"       : 2,
 
 

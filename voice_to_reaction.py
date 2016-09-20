@@ -9,7 +9,7 @@ import re
 import json
 import time
 
-PERSONALITY_FILE_PATH = "./emotion_mappings/easier_pleased.json"
+PERSONALITY_FILE_PATH = "./emotion_mappings/responsive.json"
 
 os.system("sudo killall -9 pocketsphinx_continuous 2> /dev/null")
 proc = subprocess.Popen(["sudo pocketsphinx_continuous -adcdev plughw:1,0 -dict ./bot.dic  2> /dev/null"], stdout=subprocess.PIPE, shell=True, bufsize=1)
@@ -26,15 +26,7 @@ personality = load_personality()
 import api
 
 def default_action():
-	pan = api.GetMotorValue(19)
-	api.SetMotorValue(19, min(700, pan+50))
-	time.sleep(0.5)
-	api.SetMotorValue(19, max(300, pan-50))
-	time.sleep(0.5)
-	api.SetMotorValue(19, min(700, pan+50))
-	time.sleep(0.5)
-	api.SetMotorValue(19, pan)
-
+        api.PlayAction(66)
 	
 def take_action(text, personality):
 	emotion = None
@@ -80,7 +72,7 @@ try:
 		for line in iter(proc.stdout.readline, b''):
 			row = line[:-1]
 			match = re.match(r"(\d+)\:(.*)", row)
-			if match and time.time() - last_action_time > 10.0:
+			if match and time.time() - last_action_time > 8.0:
 				seq =  match.groups()[0]
 				text = match.groups()[1]
 				print "\nGet text:", text

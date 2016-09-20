@@ -8,21 +8,18 @@
         "scary"     : "fear",
         "mad"       : "anger",
         "fantastic" : "surprise",
-        "liar"       : "sad",
+        "liar"       : "anger",
 
-        "_default": "NA"
+        "_default"  : "NA"
     },
 
     "degree": {
-        "beautiful" : 3,
-        "stupid"    : 2,
-        "smart"     : 3,
-        "scary"     : 2,
-        "mad"       : 2,
+
+        "very"      : 3,
+        "super"     : 3,
+        "extremely" : 3,
         "fantastic" : 3,
-        "liar"       : 2,
 
-
-        "_default": 2
+        "_default"  : 2
     }
 }
