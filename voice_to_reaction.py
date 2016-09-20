@@ -6,28 +6,13 @@ import os
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 import re
-#import api
 import json
+import time
 
 PERSONALITY_FILE_PATH = "./emotion_mappings/easier_pleased.json"
 
 os.system("sudo killall -9 pocketsphinx_continuous 2> /dev/null")
 proc = subprocess.Popen(["sudo pocketsphinx_continuous -adcdev plughw:1,0 2> /dev/null"], stdout=subprocess.PIPE, shell=True, bufsize=1)
-
-def take_action(text, personality):
-	emotion = None
-	degree = None
-	for word in text.split(' '):
-		if emotion is None:
-			emotion = personality["keywords"].get(word, None)
-		if degree is None:
-			degree = personality["degree"].get(word, None)
-	if emotion is None:
-		emotion = personality["keywords"]["_default"]
-	if degree is None:
-		degree = personality["degree"]["_default"]
-
-	print("Got emotion [%s] with degree [%d]." % (emotion, degree))
 
 
 def load_personality():
@@ -39,30 +24,56 @@ def load_personality():
 
 personality = load_personality()
 
+import api
+
+def take_action(text, personality):
+	emotion = None
+	degree = None
+        api_map = {'happy1': 4, 'happy2': 5, 'anger2': 6, 'anger3': 7, 'fear3': 11,
+                   'fear2': 12, 'surprise2': 13, 'surprise3': 14, 'sad2': 17, 'sad3': 18, 'default': 4}
+	for word in text.split(' '):
+		if emotion is None:
+			emotion = personality["keywords"].get(word, None)
+		if degree is None:
+			degree = personality["degree"].get(word, None)
+	if emotion is None:
+		emotion = personality["keywords"]["_default"]
+	if degree is None:
+		degree = personality["degree"]["_default"]
+
+	print("Got emotion [%s] with degree [%d]." % (emotion, degree))
+        api.PlayAction(api_map[emotion + str(degree)])
+
+
+
 def init_rme_api():
 	if api.Initialize():
 		print("Initialized Node Server")
-		play_page_for_sit()
+		#play_page_for_sit()
 	else:
 		print("Initialization failed")
 		sys.exit(1)
 
-#init_rme_api()
-		
+init_rme_api()
+
+last_action_time = time.time()
+
+
 try:
 	while True:
 		for line in iter(proc.stdout.readline, b''):
 			row = line[:-1]
 			match = re.match(r"(\d+)\: (.+)", row)
-			if match:
+			if match and time.time() - last_action_time > 10.0:
 				seq =  match.groups()[0]
 				text = match.groups()[1]
 				print "\nGet text:", text
 				take_action(text, personality)
+                                last_action_time = time.time()
 			else:
 				print row
 			
 except KeyboardInterrupt:
 	print "Exiting..."
-	#api.ServoShutdown()
+	api.ServoShutdown()
 
